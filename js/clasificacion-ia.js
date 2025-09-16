@@ -143,26 +143,31 @@ class ClasificadorRNA {
    * Determina la prioridad basándose en las probabilidades
    */
   clasificarPrioridad(datosFormulario) {
-    // Codificar variables
-    const variablesCodificadas = this.codificarVariables(datosFormulario)
+    console.log("[v0] Iniciando clasificación mejorada de denuncia")
 
-    // Procesar a través de la RNA
+    // First, apply rule-based scoring for more realistic results
+    const scoreBase = this.calcularScoreBase(datosFormulario)
+
+    // Then apply the neural network simulation
+    const variablesCodificadas = this.codificarVariables(datosFormulario)
     const probabilidades = this.procesarRNA(variablesCodificadas)
+
+    const probabilidadesAjustadas = this.ajustarConReglas(probabilidades, scoreBase)
 
     // Determinar la clase con mayor probabilidad
     const prioridades = ["Baja", "Media", "Alta"]
-    const indiceMaximo = probabilidades.indexOf(Math.max(...probabilidades))
+    const indiceMaximo = probabilidadesAjustadas.indexOf(Math.max(...probabilidadesAjustadas))
     const prioridadAsignada = prioridades[indiceMaximo]
 
     console.log("[v0] Prioridad asignada:", prioridadAsignada)
 
     return {
       prioridad: prioridadAsignada,
-      confianza: Math.round(probabilidades[indiceMaximo] * 100),
+      confianza: Math.round(probabilidadesAjustadas[indiceMaximo] * 100),
       probabilidades: {
-        baja: Math.round(probabilidades[0] * 100),
-        media: Math.round(probabilidades[1] * 100),
-        alta: Math.round(probabilidades[2] * 100),
+        baja: Math.round(probabilidadesAjustadas[0] * 100),
+        media: Math.round(probabilidadesAjustadas[1] * 100),
+        alta: Math.round(probabilidadesAjustadas[2] * 100),
       },
     }
   }
@@ -207,16 +212,79 @@ class ClasificadorRNA {
   }
 
   aplicarSoftmax(valores) {
-    // Reducir a 3 valores para las 3 clases de prioridad
-    const valoresReducidos = [
-      valores.slice(0, 3).reduce((a, b) => a + b, 0),
-      valores.slice(3, 6).reduce((a, b) => a + b, 0),
-      valores.slice(6, 8).reduce((a, b) => a + b, 0),
-    ]
+    // Instead of uneven grouping, use a more balanced approach based on the actual neural network logic
+
+    // Calculate weighted scores for each priority class using the hidden layer values
+    const scoresBaja = valores[0] * 0.2 + valores[1] * 0.3 + valores[2] * 0.1 // Lower weights for low priority
+    const scoresMedia = valores[3] * 0.4 + valores[4] * 0.5 + valores[5] * 0.4 // Medium weights for medium priority
+    const scoresAlta = valores[6] * 0.8 + valores[7] * 0.9 // Higher weights for high priority
+
+    const valoresReducidos = [scoresBaja, scoresMedia, scoresAlta]
 
     const exp = valoresReducidos.map((v) => Math.exp(v))
     const suma = exp.reduce((a, b) => a + b, 0)
     return exp.map((v) => v / suma)
+  }
+
+  /**
+   * New method to calculate base score using rule-based logic
+   */
+  calcularScoreBase(datosFormulario) {
+    let score = 0
+
+    // Score based on incident type
+    const tipoScore = this.pesosEntrada[datosFormulario.tipo] || 0.3
+    score += tipoScore
+
+    // Score based on keywords in description
+    const descripcionLower = datosFormulario.descripcion.toLowerCase()
+    if (descripcionLower.includes("emergencia") || descripcionLower.includes("peligro")) {
+      score += 0.4
+    } else if (descripcionLower.includes("urgente") || descripcionLower.includes("caido")) {
+      score += 0.2
+    }
+
+    // Score based on location
+    const ubicacionTipo = this.determinarTipoUbicacion(datosFormulario.ubicacion)
+    if (ubicacionTipo === "critica") {
+      score += 0.3
+    } else if (ubicacionTipo === "media") {
+      score += 0.1
+    }
+
+    // Score based on evidence
+    if (datosFormulario.tieneEvidencia) {
+      score += 0.1
+    }
+
+    return Math.min(score, 1.0) // Cap at 1.0
+  }
+
+  /**
+   * New method to adjust neural network probabilities with rule-based logic
+   */
+  ajustarConReglas(probabilidades, scoreBase) {
+    // Adjust probabilities based on rule-based score
+    const ajustadas = [...probabilidades]
+
+    if (scoreBase > 0.7) {
+      // High score should favor "Alta" priority
+      ajustadas[2] *= 1.5 // Boost Alta
+      ajustadas[1] *= 0.8 // Reduce Media
+      ajustadas[0] *= 0.5 // Reduce Baja
+    } else if (scoreBase < 0.4) {
+      // Low score should favor "Baja" priority
+      ajustadas[0] *= 1.5 // Boost Baja
+      ajustadas[1] *= 0.8 // Reduce Media
+      ajustadas[2] *= 0.5 // Reduce Alta
+    } else {
+      // Medium score should favor "Media" priority
+      ajustadas[1] *= 1.2 // Boost Media slightly
+    }
+
+    // Renormalize
+    const suma = ajustadas.reduce((a, b) => a + b, 0)
+    return ajustadas.map((v) => v / suma)
   }
 }
 
