@@ -267,16 +267,15 @@ class ClasificadorRNA {
     // Adjust probabilities based on rule-based score
     const ajustadas = [...probabilidades]
 
-    if (scoreBase > 0.7) {
+    if (scoreBase > 0.65) {
       // High score should favor "Alta" priority
-      ajustadas[2] *= 1.5 // Boost Alta
-      ajustadas[1] *= 0.8 // Reduce Media
-      ajustadas[0] *= 0.5 // Reduce Baja
-    } else if (scoreBase < 0.4) {
-      // Low score should favor "Baja" priority
-      ajustadas[0] *= 1.5 // Boost Baja
-      ajustadas[1] *= 0.8 // Reduce Media
-      ajustadas[2] *= 0.5 // Reduce Alta
+      ajustadas[2] *= 1.8 // Boost Alta more
+      ajustadas[1] *= 0.7 // Reduce Media
+      ajustadas[0] *= 0.3 // Reduce Baja significantly
+    } else if (scoreBase < 0.45) {
+      ajustadas[0] *= 2.0 // Boost Baja significantly
+      ajustadas[1] *= 0.6 // Reduce Media more
+      ajustadas[2] *= 0.2 // Reduce Alta significantly
     } else {
       // Medium score should favor "Media" priority
       ajustadas[1] *= 1.2 // Boost Media slightly
@@ -297,4 +296,27 @@ const clasificadorRNA = new ClasificadorRNA()
 function clasificarDenuncia(datosFormulario) {
   console.log("[v0] Iniciando clasificación de denuncia")
   return clasificadorRNA.clasificarPrioridad(datosFormulario)
+}
+
+/**
+ * FUNCIÓN ESPECIAL PARA GARANTIZAR PRIORIDAD BAJA (solo para testing)
+ */
+function crearEjemploBajaGarantizada() {
+  return {
+    tipo: "ruido",
+    descripcion: "Música en casa vecina por la tarde",
+    ubicacion: "parque-residencial-norte",
+    tieneEvidencia: false,
+  }
+}
+
+/**
+ * Added function to test classification with guaranteed low priority
+ */
+function probarClasificacionBaja() {
+  const ejemplo = crearEjemploBajaGarantizada()
+  const resultado = clasificarDenuncia(ejemplo)
+  console.log("[v0] Ejemplo baja garantizada:", ejemplo)
+  console.log("[v0] Resultado:", resultado)
+  return resultado
 }
