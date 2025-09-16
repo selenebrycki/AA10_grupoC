@@ -31,7 +31,6 @@
     <div class="contenedor">
         <div class="navegacion-superior">
             <button class="boton" onclick="window.location.href='menu.html'">Volver al Menú</button>
-            <!-- Added button to clear all complaints for demo purposes -->
             <button class="boton boton-peligro" onclick="limpiarDenuncias()" style="background-color: #f44336;">Limpiar Denuncias</button>
             <button class="boton" onclick="logout()">Cerrar Sesión</button>
         </div>
@@ -173,16 +172,11 @@
             window.location.href = 'index.html';
         }
 
-        /**
-         * New function to clear all complaints from localStorage
-         * Useful for demo purposes to start fresh
-         */
         function limpiarDenuncias() {
             if (confirm('¿Estás seguro de que quieres eliminar TODAS las denuncias? Esta acción no se puede deshacer.')) {
                 localStorage.removeItem('denuncias');
                 console.log("[v0] Todas las denuncias han sido eliminadas del localStorage");
                 
-                // Clear the display immediately
                 document.getElementById('listaDenuncias').innerHTML = '';
                 document.getElementById('tarjetasMovil').innerHTML = '';
                 

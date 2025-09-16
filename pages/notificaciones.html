@@ -129,8 +129,6 @@
             if (confirm('¿Estás seguro de que quieres eliminar TODAS las notificaciones? Esta acción no se puede deshacer.')) {
                 localStorage.removeItem('notificaciones');
                 console.log("[v0] Todas las notificaciones han sido eliminadas del localStorage");
-                
-                // Clear the display immediately
                 document.getElementById('listaNotificaciones').innerHTML = '';
                 
                 alert('Todas las notificaciones han sido eliminadas exitosamente.');
