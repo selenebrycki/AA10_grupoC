@@ -71,32 +71,6 @@
             
             let denuncias = JSON.parse(localStorage.getItem('denuncias') || '[]');
             
-            if (denuncias.length === 0) {
-                denuncias = [
-                    {
-                        id: '001',
-                        fecha: '2023-09-13',
-                        estado: 'En proceso',
-                        prioridad: 'Alta',
-                        clasificadaPorIA: false
-                    },
-                    {
-                        id: '002',
-                        fecha: '2023-09-12',
-                        estado: 'Pendiente',
-                        prioridad: 'Media',
-                        clasificadaPorIA: false
-                    },
-                    {
-                        id: '003',
-                        fecha: '2023-09-10',
-                        estado: 'Completada',
-                        prioridad: 'Baja',
-                        clasificadaPorIA: false
-                    }
-                ];
-            }
-            
             renderizarTabla(denuncias);
             renderizarTarjetas(denuncias);
         }
@@ -208,8 +182,9 @@
                 localStorage.removeItem('denuncias');
                 console.log("[v0] Todas las denuncias han sido eliminadas del localStorage");
                 
-                // Reload the page to show empty state
-                location.reload();
+                // Clear the display immediately
+                document.getElementById('listaDenuncias').innerHTML = '';
+                document.getElementById('tarjetasMovil').innerHTML = '';
                 
                 alert('Todas las denuncias han sido eliminadas exitosamente.');
             }

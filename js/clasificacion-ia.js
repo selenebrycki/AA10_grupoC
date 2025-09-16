@@ -264,21 +264,23 @@ class ClasificadorRNA {
    * New method to adjust neural network probabilities with rule-based logic
    */
   ajustarConReglas(probabilidades, scoreBase) {
-    // Adjust probabilities based on rule-based score
     const ajustadas = [...probabilidades]
 
-    if (scoreBase > 0.65) {
-      // High score should favor "Alta" priority
-      ajustadas[2] *= 1.8 // Boost Alta more
-      ajustadas[1] *= 0.7 // Reduce Media
-      ajustadas[0] *= 0.3 // Reduce Baja significantly
-    } else if (scoreBase < 0.45) {
-      ajustadas[0] *= 2.0 // Boost Baja significantly
-      ajustadas[1] *= 0.6 // Reduce Media more
-      ajustadas[2] *= 0.2 // Reduce Alta significantly
+    if (scoreBase > 0.7) {
+      // High score should strongly favor "Alta" priority
+      ajustadas[2] *= 2.5 // Boost Alta significantly
+      ajustadas[1] *= 0.4 // Reduce Media significantly
+      ajustadas[0] *= 0.1 // Reduce Baja drastically
+    } else if (scoreBase < 0.4) {
+      // Low score should strongly favor "Baja" priority
+      ajustadas[0] *= 3.0 // Boost Baja significantly
+      ajustadas[1] *= 0.3 // Reduce Media significantly
+      ajustadas[2] *= 0.1 // Reduce Alta drastically
     } else {
-      // Medium score should favor "Media" priority
-      ajustadas[1] *= 1.2 // Boost Media slightly
+      // Medium score (0.4-0.7) should favor "Media" priority
+      ajustadas[1] *= 2.0 // Boost Media significantly
+      ajustadas[0] *= 0.5 // Reduce Baja
+      ajustadas[2] *= 0.5 // Reduce Alta
     }
 
     // Renormalize

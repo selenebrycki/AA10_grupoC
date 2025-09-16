@@ -22,6 +22,7 @@
     <div class="contenedor">
         <div class="navegacion-superior">
             <button class="boton" onclick="window.location.href='menu.html'">Volver al Menú</button>
+            <button class="boton boton-peligro" onclick="limpiarNotificaciones()" style="background-color: #f44336;">Limpiar Notificaciones</button>
             <button class="boton" onclick="logout()">Cerrar Sesión</button>
         </div>
         <h2>Notificaciones</h2>
@@ -122,6 +123,18 @@
         function logout() {
             sessionStorage.removeItem('isLoggedIn');
             window.location.href = 'index.html';
+        }
+
+        function limpiarNotificaciones() {
+            if (confirm('¿Estás seguro de que quieres eliminar TODAS las notificaciones? Esta acción no se puede deshacer.')) {
+                localStorage.removeItem('notificaciones');
+                console.log("[v0] Todas las notificaciones han sido eliminadas del localStorage");
+                
+                // Clear the display immediately
+                document.getElementById('listaNotificaciones').innerHTML = '';
+                
+                alert('Todas las notificaciones han sido eliminadas exitosamente.');
+            }
         }
     </script>
 </body>
