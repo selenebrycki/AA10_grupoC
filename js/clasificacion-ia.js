@@ -1,14 +1,11 @@
-/**
- * MÓDULO DE CLASIFICACIÓN CON RED NEURONAL ARTIFICIAL (RNA)
- *
- * Este módulo simula una RNA de 3 capas para clasificar denuncias urbanas
- * según su prioridad (Alta, Media, Baja) basándose en las variables del PDF:
- * - V1: Tipo de incidente
- * - V2: Descripción (palabras clave)
- * - V3: Ubicación
- * - V4: Evidencia visual
- * - V5: Historial de reclamos (simulado)
- */
+/*MÓDULO DE CLASIFICACIÓN CON RED NEURONAL ARTIFICIAL (RNA)
+ Este módulo simula una RNA de 3 capas para clasificar denuncias urbanas
+ según su prioridad (Alta, Media, Baja) basándose en las variables:
+ - V1: Tipo de incidente
+ - V2: Descripción (palabras clave)
+ - V3: Ubicación
+ - V4: Evidencia visual
+ - V5: Historial de reclamos (simulado)*/
 
 class ClasificadorRNA {
   constructor() {
@@ -61,10 +58,8 @@ class ClasificadorRNA {
     }
   }
 
-  /**
-   * PASO 1: CODIFICACIÓN DE VARIABLES (como especifica el PDF)
-   * Convierte datos simbólicos a representación numérica
-   */
+  /*PASO 1: CODIFICACIÓN DE VARIABLES
+  Convierte datos simbólicos a representación numérica*/
   codificarVariables(datosFormulario) {
     console.log("[v0] Iniciando codificación de variables para RNA")
 
@@ -111,10 +106,8 @@ class ClasificadorRNA {
     }
   }
 
-  /**
-   * PASO 2: SIMULACIÓN DE LA ARQUITECTURA RNA (3 capas del PDF)
-   * Capa entrada (16 neuronas) → Capa oculta (8 neuronas) → Capa salida (3 neuronas)
-   */
+  /*PASO 2: SIMULACIÓN DE LA ARQUITECTURA RNA (3 capas)
+   Capa entrada (16 neuronas) → Capa oculta (8 neuronas) → Capa salida (3 neuronas)*/
   procesarRNA(variablesCodificadas) {
     console.log("[v0] Procesando datos a través de la RNA simulada")
 
@@ -138,23 +131,21 @@ class ClasificadorRNA {
     return probabilidades
   }
 
-  /**
-   * PASO 3: CLASIFICACIÓN FINAL
-   * Determina la prioridad basándose en las probabilidades
-   */
+  /*PASO 3: CLASIFICACIÓN FINAL
+  Determina la prioridad basándose en las probabilidades*/
   clasificarPrioridad(datosFormulario) {
     console.log("[v0] Iniciando clasificación mejorada de denuncia")
 
-    // First, apply rule-based scoring for more realistic results
+    //Se aplica una puntuación basada en reglas.
     const scoreBase = this.calcularScoreBase(datosFormulario)
 
-    // Then apply the neural network simulation
+    //Se aplica la simulación de red neuronal.
     const variablesCodificadas = this.codificarVariables(datosFormulario)
     const probabilidades = this.procesarRNA(variablesCodificadas)
 
     const probabilidadesAjustadas = this.ajustarConReglas(probabilidades, scoreBase)
 
-    // Determinar la clase con mayor probabilidad
+    //Se determina la clase con mayor probabilidad
     const prioridades = ["Baja", "Media", "Alta"]
     const indiceMaximo = probabilidadesAjustadas.indexOf(Math.max(...probabilidadesAjustadas))
     const prioridadAsignada = prioridades[indiceMaximo]
@@ -172,7 +163,7 @@ class ClasificadorRNA {
     }
   }
 
-  // MÉTODOS AUXILIARES PARA CODIFICACIÓN
+  //MÉTODOS AUXILIARES PARA CODIFICACIÓN
 
   oneHotEncoding(valor, categorias) {
     return categorias.map((cat) => (cat === valor ? 1 : 0))
@@ -226,17 +217,12 @@ class ClasificadorRNA {
     return exp.map((v) => v / suma)
   }
 
-  /**
-   * New method to calculate base score using rule-based logic
-   */
   calcularScoreBase(datosFormulario) {
     let score = 0
 
-    // Score based on incident type
     const tipoScore = this.pesosEntrada[datosFormulario.tipo] || 0.3
     score += tipoScore
 
-    // Score based on keywords in description
     const descripcionLower = datosFormulario.descripcion.toLowerCase()
     if (descripcionLower.includes("emergencia") || descripcionLower.includes("peligro")) {
       score += 0.4
@@ -244,7 +230,6 @@ class ClasificadorRNA {
       score += 0.2
     }
 
-    // Score based on location
     const ubicacionTipo = this.determinarTipoUbicacion(datosFormulario.ubicacion)
     if (ubicacionTipo === "critica") {
       score += 0.3
@@ -252,7 +237,6 @@ class ClasificadorRNA {
       score += 0.1
     }
 
-    // Score based on evidence
     if (datosFormulario.tieneEvidencia) {
       score += 0.1
     }
@@ -260,30 +244,23 @@ class ClasificadorRNA {
     return Math.min(score, 1.0) // Cap at 1.0
   }
 
-  /**
-   * New method to adjust neural network probabilities with rule-based logic
-   */
   ajustarConReglas(probabilidades, scoreBase) {
     const ajustadas = [...probabilidades]
 
     if (scoreBase > 0.7) {
-      // High score should strongly favor "Alta" priority
-      ajustadas[2] *= 2.5 // Boost Alta significantly
-      ajustadas[1] *= 0.4 // Reduce Media significantly
-      ajustadas[0] *= 0.1 // Reduce Baja drastically
-    } else if (scoreBase < 0.4) {
-      // Low score should strongly favor "Baja" priority
-      ajustadas[0] *= 3.0 // Boost Baja significantly
-      ajustadas[1] *= 0.3 // Reduce Media significantly
-      ajustadas[2] *= 0.1 // Reduce Alta drastically
+      ajustadas[2] *= 2.5 
+      ajustadas[1] *= 0.4 
+      ajustadas[0] *= 0.1 
+        } else if (scoreBase < 0.4) {
+      ajustadas[0] *= 3.0 
+      ajustadas[1] *= 0.3 
+      ajustadas[2] *= 0.1 
     } else {
-      // Medium score (0.4-0.7) should favor "Media" priority
-      ajustadas[1] *= 2.0 // Boost Media significantly
-      ajustadas[0] *= 0.5 // Reduce Baja
-      ajustadas[2] *= 0.5 // Reduce Alta
+      ajustadas[1] *= 2.0 
+      ajustadas[0] *= 0.5 
+      ajustadas[2] *= 0.5 
     }
 
-    // Renormalize
     const suma = ajustadas.reduce((a, b) => a + b, 0)
     return ajustadas.map((v) => v / suma)
   }
@@ -292,33 +269,10 @@ class ClasificadorRNA {
 // Instancia global del clasificador
 const clasificadorRNA = new ClasificadorRNA()
 
-/**
- * FUNCIÓN PRINCIPAL PARA USAR DESDE EL FORMULARIO
- */
+/*FUNCIÓN PRINCIPAL PARA USAR DESDE EL FORMULARIO*/
 function clasificarDenuncia(datosFormulario) {
   console.log("[v0] Iniciando clasificación de denuncia")
   return clasificadorRNA.clasificarPrioridad(datosFormulario)
 }
 
-/**
- * FUNCIÓN ESPECIAL PARA GARANTIZAR PRIORIDAD BAJA (solo para testing)
- */
-function crearEjemploBajaGarantizada() {
-  return {
-    tipo: "ruido",
-    descripcion: "Música en casa vecina por la tarde",
-    ubicacion: "parque-residencial-norte",
-    tieneEvidencia: false,
-  }
-}
 
-/**
- * Added function to test classification with guaranteed low priority
- */
-function probarClasificacionBaja() {
-  const ejemplo = crearEjemploBajaGarantizada()
-  const resultado = clasificarDenuncia(ejemplo)
-  console.log("[v0] Ejemplo baja garantizada:", ejemplo)
-  console.log("[v0] Resultado:", resultado)
-  return resultado
-}
