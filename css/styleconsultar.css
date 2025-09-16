@@ -1,0 +1,350 @@
+/* Estilos responsivos para consultar estado */
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    background-color: #116A87;
+    background-image: url('../foto2.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    font-family: Arial, sans-serif;
+}
+
+/* Overlay para mejorar la legibilidad */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(17, 106, 135, 0.7);
+    z-index: -1;
+}
+
+.contenedor {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    min-height: 100vh;
+}
+
+.navegacion-superior {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 30px;
+    padding: 20px 0;
+    gap: 15px;
+}
+
+.navegacion-superior .boton {
+    background-color: rgba(255, 255, 255, 0.9);
+    color: #116A87;
+    border: 2px solid #116A87;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(5px);
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+    min-width: 120px;
+}
+
+.navegacion-superior .boton:hover {
+    background-color: #116A87;
+    color: white;
+    box-shadow: 0 5px 15px rgba(17, 106, 135, 0.4);
+}
+
+h2 {
+    color: white;
+    text-align: center;
+    font-size: 32px;
+    margin-bottom: 30px;
+    text-shadow: 0 3px 6px rgba(0, 0, 0, 0.5);
+    background-color: rgba(17, 106, 135, 0.8);
+    padding: 20px;
+    border-radius: 15px;
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.grupo-formulario {
+    margin-bottom: 25px;
+}
+
+.grupo-formulario input {
+    width: 100%;
+    padding: 15px;
+    border: 2px solid #116A87;
+    border-radius: 8px;
+    font-size: 16px;
+    background-color: rgba(255, 255, 255, 0.95);
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+    backdrop-filter: blur(5px);
+}
+
+.grupo-formulario input:focus {
+    outline: none;
+    border-color: #0d5470;
+    background-color: white;
+    box-shadow: 0 0 10px rgba(17, 106, 135, 0.3);
+}
+
+.contenedor-tabla {
+    background-color: rgba(255, 255, 255, 0.95);
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(17, 106, 135, 0.3);
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0;
+}
+
+table th,
+table td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid rgba(17, 106, 135, 0.2);
+}
+
+table th {
+    background-color: #116A87;
+    color: white;
+    font-weight: bold;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+table tr {
+    transition: background-color 0.3s ease;
+    background-color: #E6F3FF; /* Celeste pastel */
+}
+
+table tr:hover {
+    background-color: rgba(17, 106, 135, 0.2);
+}
+
+table tr.atendida {
+    background-color: white;
+}
+
+table tr.atendida:hover {
+    background-color: #f8f9fa;
+}
+
+table td .boton {
+    background-color: #116A87;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+table td .boton:hover {
+    background-color: #0d5470;
+    box-shadow: 0 3px 10px rgba(17, 106, 135, 0.4);
+}
+
+/* Estados de las denuncias */
+.estado-pendiente {
+    color: #f39c12;
+    font-weight: bold;
+}
+
+.estado-proceso {
+    color: #3498db;
+    font-weight: bold;
+}
+
+.estado-completado {
+    color: #27ae60;
+    font-weight: bold;
+}
+
+.estado-completado {
+    color: #27ae60;
+    font-weight: bold;
+}
+
+.prioridad-alta {
+    color: #e74c3c;
+    font-weight: bold;
+}
+
+.prioridad-media {
+    color: #f39c12;
+    font-weight: bold;
+}
+
+.prioridad-baja {
+    color: #27ae60;
+    font-weight: bold;
+}
+
+/* Responsivo para tablets */
+@media (max-width: 768px) {
+    .contenedor {
+        padding: 15px;
+    }
+    
+    h2 {
+        font-size: 24px;
+        padding: 15px;
+    }
+    
+    .navegacion-superior {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .navegacion-superior .boton {
+        width: 100%;
+        margin: 0;
+    }
+    
+    .contenedor-tabla {
+        padding: 15px;
+        overflow-x: auto;
+    }
+    
+    table {
+        min-width: 600px;
+    }
+    
+    table th,
+    table td {
+        padding: 12px 8px;
+        font-size: 14px;
+    }
+    
+    table td .boton {
+        padding: 6px 12px;
+        font-size: 12px;
+    }
+}
+
+/* Responsivo para móviles */
+@media (max-width: 480px) {
+    .contenedor {
+        padding: 10px;
+    }
+    
+    h2 {
+        font-size: 20px;
+        padding: 12px;
+        margin-bottom: 20px;
+    }
+    
+    .grupo-formulario input {
+        padding: 12px;
+        font-size: 14px;
+    }
+    
+    .contenedor-tabla {
+        padding: 10px;
+    }
+    
+    table {
+        min-width: 500px;
+    }
+    
+    table th,
+    table td {
+        padding: 10px 6px;
+        font-size: 12px;
+    }
+    
+    table td .boton {
+        padding: 5px 10px;
+        font-size: 11px;
+    }
+    
+    .navegacion-superior .boton {
+        font-size: 14px;
+        padding: 10px 15px;
+        min-width: auto;
+    }
+}
+
+/* Versión de tarjetas para móvil muy pequeño */
+@media (max-width: 400px) {
+    .contenedor-tabla {
+        display: none;
+    }
+    
+    .tarjetas-movil {
+        display: block;
+    }
+    
+    .tarjeta-denuncia {
+        background-color: #E6F3FF; /* Celeste pastel */
+        border-radius: 10px;
+        padding: 15px;
+        margin-bottom: 15px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        border: 2px solid rgba(17, 106, 135, 0.3);
+    }
+    
+    .tarjeta-denuncia.atendida {
+        background-color: white;
+    }
+    
+    .tarjeta-denuncia h4 {
+        color: #116A87;
+        margin: 0 0 10px 0;
+        font-size: 16px;
+    }
+    
+    .tarjeta-denuncia p {
+        margin: 5px 0;
+        font-size: 14px;
+    }
+    
+    .tarjeta-denuncia .boton {
+        width: 100%;
+        margin-top: 10px;
+        padding: 10px;
+        background-color: #116A87;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+    }
+}
+
+.tarjetas-movil {
+    display: none;
+}
+
+/* Animaciones */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.contenedor-tabla {
+    animation: fadeInUp 0.6s ease forwards;
+}

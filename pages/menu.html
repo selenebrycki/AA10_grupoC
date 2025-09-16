@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menú Principal - Sistema de Reportes Urbanos</title>
+    <link rel="stylesheet" href="../css/stylemenu.css">
+</head>
+<body>
+    <div class="contenedor" id="menuPrincipal">
+        <div class="navegacion-superior">
+            <button id="botonCerrarSesion" class="boton" onclick="logout()">Cerrar Sesión</button>
+        </div>
+        <h1>Menú Principal</h1>
+        <div class="cuadricula-menu">
+            <div class="elemento-menu" onclick="window.location.href='reportar-denuncia.html'">
+                <h3>Reportar Denuncia</h3>
+                <p>Crear un nuevo reporte de incidente</p>
+            </div>
+            <div class="elemento-menu" onclick="window.location.href='consultar-estado.html'">
+                <h3>Consultar Estado</h3>
+                <p>Ver el estado de sus denuncias</p>
+            </div>
+            <div class="elemento-menu" onclick="window.location.href='notificaciones.html'">
+                <h3>Notificaciones</h3>
+                <p>Ver actualizaciones y mensajes</p>
+            </div>
+        </div>
+    </div>
+    <script>
+        function logout() {
+            sessionStorage.removeItem('isLoggedIn');
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>

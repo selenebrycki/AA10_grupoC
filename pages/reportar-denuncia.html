@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reportar Denuncia - Sistema de Reportes Urbanos</title>
+    <link rel="stylesheet" href="../css/stylereportar.css">
+</head>
+<body>
+    <div class="contenedor">
+        <div class="navegacion-superior">
+            <button class="boton" onclick="window.location.href='menu.html'">Volver al Menú</button>
+            <button class="boton" onclick="logout()">Cerrar Sesión</button>
+        </div>
+        <div class="contenedor-formulario">
+            <h2>Reportar Denuncia</h2>
+            <form id="formularioIncidente">
+                <div class="grupo-formulario">
+                    <label for="tipoIncidente">Tipo de Incidente</label>
+                    <select id="tipoIncidente" required>
+                        <option value="">Seleccione un tipo</option>
+                        <option value="baches">Baches</option>
+                        <option value="alumbrado">Alumbrado Público</option>
+                        <option value="residuos">Recolección de Residuos</option>
+                        <option value="semaforos">Semáforos</option>
+                        <option value="agua">Problemas de Agua</option>
+                        <option value="arboles">Árboles Caídos</option>
+                        <option value="vandalismo">Vandalismo</option>
+                        <option value="ruido">Contaminación Sonora</option>
+                        <option value="incendio">Incendio</option>
+                    </select>
+                </div>
+                <div class="grupo-formulario">
+                    <label for="descripcion">Descripción</label>
+                    <textarea id="descripcion" required></textarea>
+                </div>
+                <div class="grupo-formulario">
+                    <label for="ubicacion">Ubicación</label>
+                    <select id="ubicacion" required>
+                        <option value="">Seleccione una ubicación</option>
+                        <option value="centro">Centro de la Ciudad</option>
+                        <option value="residencial-norte">Zona Residencial Norte</option>
+                        <option value="residencial-sur">Zona Residencial Sur</option>
+                        <option value="residencial-este">Zona Residencial Este</option>
+                        <option value="residencial-oeste">Zona Residencial Oeste</option>
+                        <option value="industrial">Zona Industrial</option>
+                        <option value="comercial">Zona Comercial</option>
+                        <option value="universitaria">Zona Universitaria</option>
+                        <option value="hospital">Zona Hospitalaria</option>
+                        <option value="parque">Parques y Espacios Verdes</option>
+                    </select>
+                </div>
+                <div class="grupo-formulario">
+                    <label>Evidencias</label>
+                    <div class="subida-archivo">
+                        <input type="file" id="evidencia" multiple>
+                        <p>Arrastre archivos aquí o haga clic para seleccionar</p>
+                    </div>
+                </div>
+                <div class="grupo-formulario">
+                    <button type="submit" class="boton">Enviar</button>
+                    <button type="button" class="boton" onclick="window.location.href='menu.html'">Cancelar</button>
+                </div>
+            </form>
+            
+            <!-- Agregado panel de resultados de clasificación RNA -->
+            <div id="resultadoClasificacion" style="display: none; margin-top: 20px; padding: 15px; border: 2px solid #4CAF50; border-radius: 8px; background-color: #f9f9f9;">
+                <h3>🤖 Clasificación Automática por IA</h3>
+                <p><strong>Prioridad asignada:</strong> <span id="prioridadAsignada"></span></p>
+                <p><strong>Confianza:</strong> <span id="confianzaIA"></span>%</p>
+                <div id="detallesProbabilidades" style="font-size: 0.9em; color: #666;">
+                    <p>Probabilidades calculadas:</p>
+                    <ul>
+                        <li>Prioridad Baja: <span id="probBaja"></span>%</li>
+                        <li>Prioridad Media: <span id="probMedia"></span>%</li>
+                        <li>Prioridad Alta: <span id="probAlta"></span>%</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Agregado script de clasificación RNA -->
+    <script src="../js/clasificacion-ia.js"></script>
+    <script>
+        document.getElementById('formularioIncidente').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const datosFormulario = {
+                tipo: document.getElementById('tipoIncidente').value,
+                descripcion: document.getElementById('descripcion').value,
+                ubicacion: document.getElementById('ubicacion').value,
+                tieneEvidencia: document.getElementById('evidencia').files.length > 0
+            };
+            
+            console.log("[v0] Datos del formulario recopilados:", datosFormulario);
+            
+            const resultadoRNA = clasificarDenuncia(datosFormulario);
+            
+            mostrarResultadosClasificacion(resultadoRNA);
+            
+            guardarDenunciaConIA(datosFormulario, resultadoRNA);
+            
+            crearNotificacionClasificacion(resultadoRNA);
+        });
+
+        function mostrarResultadosClasificacion(resultado) {
+            const panel = document.getElementById('resultadoClasificacion');
+            document.getElementById('prioridadAsignada').textContent = resultado.prioridad;
+            document.getElementById('confianzaIA').textContent = resultado.confianza;
+            document.getElementById('probBaja').textContent = resultado.probabilidades.baja;
+            document.getElementById('probMedia').textContent = resultado.probabilidades.media;
+            document.getElementById('probAlta').textContent = resultado.probabilidades.alta;
+            
+            panel.style.display = 'block';
+            
+            // Auto-ocultar después de 5 segundos y redirigir
+            setTimeout(() => {
+                alert(`Denuncia enviada con éxito y clasificada como prioridad ${resultado.prioridad} por la IA`);
+                window.location.href = 'menu.html';
+            }, 3000);
+        }
+
+        function guardarDenunciaConIA(datos, resultadoRNA) {
+            const nuevaId = 'D' + Date.now().toString().slice(-6);
+            const fechaActual = new Date().toISOString().split('T')[0];
+            
+            const nuevaDenuncia = {
+                id: nuevaId,
+                fecha: fechaActual,
+                tipo: datos.tipo,
+                descripcion: datos.descripcion,
+                ubicacion: datos.ubicacion,
+                estado: 'Pendiente',
+                prioridad: resultadoRNA.prioridad,
+                clasificadaPorIA: true,
+                confianzaIA: resultadoRNA.confianza
+            };
+            
+            let denuncias = JSON.parse(localStorage.getItem('denuncias') || '[]');
+            denuncias.unshift(nuevaDenuncia); // Agregar al inicio
+            localStorage.setItem('denuncias', JSON.stringify(denuncias));
+            
+            console.log("[v0] Denuncia guardada con clasificación IA:", nuevaDenuncia);
+        }
+
+        function crearNotificacionClasificacion(resultadoRNA) {
+            const nuevaNotificacion = {
+                id: 'N' + Date.now(),
+                mensaje: `Su denuncia ha sido clasificada automáticamente como prioridad ${resultadoRNA.prioridad} por nuestro sistema de IA`,
+                fecha: new Date().toLocaleString(),
+                leida: false,
+                tipo: 'clasificacion-ia'
+            };
+            
+            let notificaciones = JSON.parse(localStorage.getItem('notificaciones') || '[]');
+            notificaciones.unshift(nuevaNotificacion);
+            localStorage.setItem('notificaciones', JSON.stringify(notificaciones));
+            
+            console.log("[v0] Notificación de clasificación creada:", nuevaNotificacion);
+        }
+
+        function logout() {
+            sessionStorage.removeItem('isLoggedIn');
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>

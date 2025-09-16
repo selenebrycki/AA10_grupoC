@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Sistema de Reportes Urbanos</title>
+    <link rel="stylesheet" href="../css/stylelogin.css">
+</head>
+<body>
+    <div class="contenedor-inicio">
+        <h2>Iniciar Sesión</h2>
+        <form id="formularioInicioSesion">
+            <div class="grupo-formulario">
+                <label for="nombreUsuario">Usuario</label>
+                <input type="text" id="nombreUsuario" name="username" required>
+            </div>
+            <div class="grupo-formulario">
+                <label for="contrasena">Contraseña</label>
+                <input type="password" id="contrasena" name="password" required>
+            </div>
+            <button type="submit" class="boton">Ingresar</button>
+            <div class="mensaje-error" id="errorInicioSesion" style="display: none;">
+                Credenciales incorrectas
+            </div>
+        </form>
+    </div>
+    <script src="../js/login.js"></script>
+</body>
+</html>

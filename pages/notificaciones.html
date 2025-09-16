@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notificaciones - Sistema de Reportes Urbanos</title>
+    <link rel="stylesheet" href="../css/stylenotificaciones.css">
+    <style>
+        /* Estilos para notificaciones de IA */
+        .notificacion-ia {
+            border-left: 4px solid #2196F3;
+            background-color: #f3f9ff;
+        }
+        
+        .icono-ia {
+            color: #2196F3;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="contenedor">
+        <div class="navegacion-superior">
+            <button class="boton" onclick="window.location.href='menu.html'">Volver al Menú</button>
+            <button class="boton" onclick="logout()">Cerrar Sesión</button>
+        </div>
+        <h2>Notificaciones</h2>
+        <div class="lista-notificaciones" id="listaNotificaciones">
+            <!-- Las notificaciones se cargarán dinámicamente -->
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            cargarNotificaciones();
+        });
+
+        function cargarNotificaciones() {
+            console.log("[v0] Cargando notificaciones desde localStorage");
+            
+            let notificaciones = JSON.parse(localStorage.getItem('notificaciones') || '[]');
+            
+            if (notificaciones.length === 0) {
+                notificaciones = [
+                    {
+                        id: 'N1',
+                        mensaje: 'Su denuncia #001 fue atendida',
+                        fecha: 'Hace 2 horas',
+                        leida: false,
+                        tipo: 'estado'
+                    },
+                    {
+                        id: 'N2',
+                        mensaje: 'Su denuncia #002 ha sido asignada',
+                        fecha: 'Hace 1 día',
+                        leida: false,
+                        tipo: 'asignacion'
+                    },
+                    {
+                        id: 'N3',
+                        mensaje: 'Su denuncia #003 ha sido resuelta',
+                        fecha: 'Hace 3 días',
+                        leida: true,
+                        tipo: 'resolucion'
+                    }
+                ];
+            }
+            
+            renderizarNotificaciones(notificaciones);
+        }
+
+        function renderizarNotificaciones(notificaciones) {
+            const contenedor = document.getElementById('listaNotificaciones');
+            contenedor.innerHTML = '';
+            
+            notificaciones.forEach(notificacion => {
+                const elemento = document.createElement('div');
+                elemento.className = 'elemento-notificacion';
+                
+                if (!notificacion.leida) {
+                    elemento.classList.add('no-leida');
+                } else {
+                    elemento.classList.add('read');
+                }
+                
+                if (notificacion.tipo === 'clasificacion-ia') {
+                    elemento.classList.add('notificacion-ia');
+                }
+                
+                const iconoIA = notificacion.tipo === 'clasificacion-ia' ? '<span class="icono-ia">🤖 </span>' : '';
+                
+                elemento.innerHTML = `
+                    <div class="contenido-notificacion">
+                        <p>${iconoIA}${notificacion.mensaje}</p>
+                        <small>${notificacion.fecha}</small>
+                    </div>
+                    <button class="boton" onclick="marcarLeida(this, '${notificacion.id}')" ${notificacion.leida ? 'disabled' : ''}>
+                        ${notificacion.leida ? 'Leída' : 'Marcar como leída'}
+                    </button>
+                `;
+                
+                contenedor.appendChild(elemento);
+            });
+        }
+
+        function marcarLeida(btn, notificacionId) {
+            const item = btn.closest('.elemento-notificacion');
+            item.classList.remove('no-leida');
+            item.classList.add('read');
+            btn.disabled = true;
+            btn.textContent = 'Leída';
+            
+            let notificaciones = JSON.parse(localStorage.getItem('notificaciones') || '[]');
+            const notificacion = notificaciones.find(n => n.id === notificacionId);
+            if (notificacion) {
+                notificacion.leida = true;
+                localStorage.setItem('notificaciones', JSON.stringify(notificaciones));
+            }
+            
+            console.log("[v0] Notificación marcada como leída:", notificacionId);
+        }
+
+        function logout() {
+            sessionStorage.removeItem('isLoggedIn');
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>

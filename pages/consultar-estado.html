@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consultar Estado - Sistema de Reportes Urbanos</title>
+    <link rel="stylesheet" href="../css/styleconsultar.css">
+    <style>
+        /* Estilos para indicadores de IA y prioridades */
+        .badge-ia {
+            background-color: #2196F3;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            margin-left: 5px;
+        }
+        
+        .prioridad-alta { color: #f44336; font-weight: bold; }
+        .prioridad-media { color: #ff9800; font-weight: bold; }
+        .prioridad-baja { color: #4caf50; font-weight: bold; }
+        
+        .confianza-ia {
+            font-size: 0.8em;
+            color: #666;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="contenedor">
+        <div class="navegacion-superior">
+            <button class="boton" onclick="window.location.href='menu.html'">Volver al Menú</button>
+            <button class="boton" onclick="logout()">Cerrar Sesión</button>
+        </div>
+        <h2>Consultar Estado de Denuncias</h2>
+        <div class="grupo-formulario">
+            <input type="text" id="filtrarDenuncias" placeholder="Filtrar denuncias...">
+        </div>
+        <div class="contenedor-tabla">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Fecha</th>
+                        <th>Estado</th>
+                        <th>Prioridad</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="listaDenuncias">
+                    <!-- Las denuncias se cargarán dinámicamente desde localStorage -->
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Versión móvil con tarjetas -->
+        <div class="tarjetas-movil" id="tarjetasMovil">
+            <!-- Las tarjetas se cargarán dinámicamente -->
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            cargarDenuncias();
+        });
+
+        function cargarDenuncias() {
+            console.log("[v0] Cargando denuncias desde localStorage");
+            
+            let denuncias = JSON.parse(localStorage.getItem('denuncias') || '[]');
+            
+            if (denuncias.length === 0) {
+                denuncias = [
+                    {
+                        id: '001',
+                        fecha: '2023-09-13',
+                        estado: 'En proceso',
+                        prioridad: 'Alta',
+                        clasificadaPorIA: false
+                    },
+                    {
+                        id: '002',
+                        fecha: '2023-09-12',
+                        estado: 'Pendiente',
+                        prioridad: 'Media',
+                        clasificadaPorIA: false
+                    },
+                    {
+                        id: '003',
+                        fecha: '2023-09-10',
+                        estado: 'Completada',
+                        prioridad: 'Baja',
+                        clasificadaPorIA: false
+                    }
+                ];
+            }
+            
+            renderizarTabla(denuncias);
+            renderizarTarjetas(denuncias);
+        }
+
+        function renderizarTabla(denuncias) {
+            const tbody = document.getElementById('listaDenuncias');
+            tbody.innerHTML = '';
+            
+            denuncias.forEach(denuncia => {
+                const fila = document.createElement('tr');
+                if (denuncia.estado === 'Completada') {
+                    fila.classList.add('atendida');
+                }
+                
+                const prioridadClass = `prioridad-${denuncia.prioridad.toLowerCase()}`;
+                const badgeIA = denuncia.clasificadaPorIA ? '<span class="badge-ia">IA</span>' : '';
+                const confianzaIA = denuncia.confianzaIA ? `<div class="confianza-ia">Confianza: ${denuncia.confianzaIA}%</div>` : '';
+                
+                fila.innerHTML = `
+                    <td>${denuncia.id}</td>
+                    <td>${denuncia.fecha}</td>
+                    <td>${denuncia.estado}</td>
+                    <td>
+                        <span class="${prioridadClass}">${denuncia.prioridad}</span>
+                        ${badgeIA}
+                        ${confianzaIA}
+                    </td>
+                    <td><button class="boton" onclick="verDetalles('${denuncia.id}')">Ver detalles</button></td>
+                `;
+                
+                tbody.appendChild(fila);
+            });
+        }
+
+        function renderizarTarjetas(denuncias) {
+            const contenedor = document.getElementById('tarjetasMovil');
+            contenedor.innerHTML = '';
+            
+            denuncias.forEach(denuncia => {
+                const tarjeta = document.createElement('div');
+                tarjeta.className = 'tarjeta-denuncia';
+                if (denuncia.estado === 'Completada') {
+                    tarjeta.classList.add('atendida');
+                }
+                
+                const prioridadClass = `prioridad-${denuncia.prioridad.toLowerCase()}`;
+                const badgeIA = denuncia.clasificadaPorIA ? '<span class="badge-ia">IA</span>' : '';
+                const confianzaIA = denuncia.confianzaIA ? `<p class="confianza-ia">Confianza IA: ${denuncia.confianzaIA}%</p>` : '';
+                
+                tarjeta.innerHTML = `
+                    <h4>Denuncia #${denuncia.id}</h4>
+                    <p><strong>Fecha:</strong> ${denuncia.fecha}</p>
+                    <p><strong>Estado:</strong> <span class="estado-${denuncia.estado.toLowerCase().replace(' ', '-')}">${denuncia.estado}</span></p>
+                    <p><strong>Prioridad:</strong> <span class="${prioridadClass}">${denuncia.prioridad}</span> ${badgeIA}</p>
+                    ${confianzaIA}
+                    <button class="boton" onclick="verDetalles('${denuncia.id}')">Ver detalles</button>
+                `;
+                
+                contenedor.appendChild(tarjeta);
+            });
+        }
+
+        document.getElementById('filtrarDenuncias').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const rows = document.querySelectorAll('#listaDenuncias tr');
+            
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(searchTerm) ? '' : 'none';
+            });
+        });
+
+        function verDetalles(id) {
+            const denuncias = JSON.parse(localStorage.getItem('denuncias') || '[]');
+            const denuncia = denuncias.find(d => d.id === id);
+            
+            if (denuncia) {
+                let mensaje = `Detalles de la denuncia ${id}:\n\n`;
+                mensaje += `Fecha: ${denuncia.fecha}\n`;
+                mensaje += `Estado: ${denuncia.estado}\n`;
+                mensaje += `Prioridad: ${denuncia.prioridad}\n`;
+                
+                if (denuncia.clasificadaPorIA) {
+                    mensaje += `\n🤖 Clasificada automáticamente por IA\n`;
+                    mensaje += `Confianza: ${denuncia.confianzaIA}%\n`;
+                }
+                
+                if (denuncia.tipo) mensaje += `Tipo: ${denuncia.tipo}\n`;
+                if (denuncia.descripcion) mensaje += `Descripción: ${denuncia.descripcion}\n`;
+                if (denuncia.ubicacion) mensaje += `Ubicación: ${denuncia.ubicacion}\n`;
+                
+                alert(mensaje);
+            } else {
+                alert(`Detalles de la denuncia ${id}`);
+            }
+        }
+
+        function logout() {
+            sessionStorage.removeItem('isLoggedIn');
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>

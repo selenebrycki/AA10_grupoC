@@ -1,0 +1,279 @@
+/* Estilos responsivos para reportar denuncia */
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    background-color: #116A87;
+    background-image: url('../foto1.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    font-family: Arial, sans-serif;
+}
+
+/* Overlay para mejorar la legibilidad */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(17, 106, 135, 0.7);
+    z-index: -1;
+}
+
+.contenedor {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    min-height: 100vh;
+}
+
+.navegacion-superior {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 30px;
+    padding: 20px 0;
+    gap: 15px;
+}
+
+.navegacion-superior .boton {
+    background-color: rgba(255, 255, 255, 0.9);
+    color: #116A87;
+    border: 2px solid #116A87;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(5px);
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+    min-width: 120px;
+}
+
+.navegacion-superior .boton:hover {
+    background-color: #116A87;
+    color: white;
+    box-shadow: 0 5px 15px rgba(17, 106, 135, 0.4);
+}
+
+.contenedor-formulario {
+    background-color: rgba(255, 255, 255, 0.95);
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(17, 106, 135, 0.3);
+}
+
+.contenedor-formulario h2 {
+    color: #116A87;
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.grupo-formulario {
+    margin-bottom: 25px;
+}
+
+.grupo-formulario label {
+    display: block;
+    margin-bottom: 8px;
+    color: #116A87;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.grupo-formulario input,
+.grupo-formulario select,
+.grupo-formulario textarea {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #116A87;
+    border-radius: 8px;
+    font-size: 16px;
+    background-color: rgba(255, 255, 255, 0.9);
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+.grupo-formulario input:focus,
+.grupo-formulario select:focus,
+.grupo-formulario textarea:focus {
+    outline: none;
+    border-color: #0d5470;
+    background-color: white;
+    box-shadow: 0 0 10px rgba(17, 106, 135, 0.3);
+}
+
+.grupo-formulario textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+.subida-archivo {
+    border: 2px dashed #116A87;
+    border-radius: 8px;
+    padding: 30px;
+    text-align: center;
+    background-color: rgba(17, 106, 135, 0.05);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.subida-archivo:hover {
+    border-color: #0d5470;
+    background-color: rgba(17, 106, 135, 0.1);
+}
+
+.subida-archivo input[type="file"] {
+    border: none;
+    background: none;
+    padding: 0;
+}
+
+.subida-archivo p {
+    margin: 10px 0 0 0;
+    color: #666;
+    font-size: 14px;
+}
+
+.grupo-formulario .boton {
+    background-color: #116A87;
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-right: 15px;
+    margin-top: 10px;
+}
+
+.grupo-formulario .boton:hover {
+    background-color: #0d5470;
+    box-shadow: 0 5px 15px rgba(17, 106, 135, 0.4);
+}
+
+.grupo-formulario .boton:last-child {
+    background-color: rgba(108, 117, 125, 0.8);
+    margin-right: 0;
+}
+
+.grupo-formulario .boton:last-child:hover {
+    background-color: rgba(108, 117, 125, 1);
+}
+
+/* Responsivo para tablets */
+@media (max-width: 768px) {
+    .contenedor {
+        padding: 15px;
+    }
+    
+    .contenedor-formulario {
+        padding: 30px 20px;
+    }
+    
+    .contenedor-formulario h2 {
+        font-size: 24px;
+    }
+    
+    .navegacion-superior {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .navegacion-superior .boton {
+        width: 100%;
+        margin: 0;
+    }
+    
+    .grupo-formulario .boton {
+        width: 100%;
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+    
+    .subida-archivo {
+        padding: 20px;
+    }
+}
+
+/* Responsivo para móviles */
+@media (max-width: 480px) {
+    .contenedor {
+        padding: 10px;
+    }
+    
+    .contenedor-formulario {
+        padding: 20px 15px;
+    }
+    
+    .contenedor-formulario h2 {
+        font-size: 20px;
+        margin-bottom: 20px;
+    }
+    
+    .grupo-formulario {
+        margin-bottom: 20px;
+    }
+    
+    .grupo-formulario label {
+        font-size: 14px;
+    }
+    
+    .grupo-formulario input,
+    .grupo-formulario select,
+    .grupo-formulario textarea {
+        font-size: 14px;
+        padding: 10px;
+    }
+    
+    .grupo-formulario textarea {
+        min-height: 100px;
+    }
+    
+    .grupo-formulario .boton {
+        font-size: 14px;
+        padding: 12px 20px;
+    }
+    
+    .navegacion-superior .boton {
+        font-size: 14px;
+        padding: 10px 15px;
+        min-width: auto;
+    }
+    
+    .subida-archivo {
+        padding: 15px;
+    }
+    
+    .subida-archivo p {
+        font-size: 12px;
+    }
+}
+
+/* Animaciones */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.contenedor-formulario {
+    animation: fadeInUp 0.6s ease forwards;
+}
